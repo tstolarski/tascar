@@ -2,9 +2,17 @@ name: MacOS make
 
 on:
   push:
-    branches: [ master, development ]
+    branches:
+      - master
+      - development
+      # GitHub Actions
+      - actions/*
+      # MSys2 for Windows & Ubuntu 22.04
+      - feature/msys2
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+  workflow_dispatch: {}
 
 jobs:
   build:
