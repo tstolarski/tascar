@@ -1,0 +1,151 @@
+name: MacOS make
+
+on:
+  push:
+    branches:
+      - master
+      - development
+      # GitHub Actions
+      - actions/*
+      # MSys2 for Windows & Ubuntu 22.04
+      - feature/msys2
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - os: ubuntu
+            os-version: "24.04"
+            family: linux
+            libc: gnu
+            architecture: x86_64
+            runs-on: ubuntu-latest
+            shell: bash -c
+            wiki: true
+
+          - os: ubuntu
+            os-version: "22.04"
+            family: linux
+            libc: gnu
+            architecture: x86_64
+            runs-on: ubuntu-22.04
+            shell: bash -c
+
+          - os: windows
+            os-version: "latest"
+            family: windows
+            libc: gnu
+            architecture: x86_64
+            runs-on: windows-latest
+            shell: msys
+
+          - os: macos
+            os-version: "latest"
+            family: apple
+            libc: darwin
+            architecture: x86_64
+            runs-on: macos-latest
+            shell: bash -c
+
+    name: "Build tascar for ${{ matrix.target.architecture }}-${{ matrix.target.family }}-${{ matrix.target.libc }}-${{ matrix.target.os }}-${{ matrix.target.os-version }}"
+    runs-on: ${{ matrix.target.runs-on }}
+
+    steps:
+    # Set up
+    - name: Check out tascar repository
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Retrieve full git history including tags (unshallow)
+      run: git fetch --unshallow --tags
+
+    - if: matrix.target.os == 'windows'
+      name: Configure Windows to not commit incorrect line endings
+      run: git config --global core.autocrlf true
+
+    # Install dependencies
+    - if: matrix.target.os == 'ubuntu'
+      name: Install dependencies for Ubuntu
+      run: sudo apt update &&
+           sudo apt install --assume-yes build-essential default-jre doxygen dpkg-dev g++ git imagemagick jackd2 libasound2-dev libboost-all-dev libcairomm-1.0-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev libjack-jackd2-dev liblo-dev libltc-dev libmatio-dev libsndfile1-dev libwebkit2gtk-4.0-dev libxml++2.6-dev lsb-release make portaudio19-dev ruby-dev software-properties-common texlive-latex-extra texlive-latex-recommended vim-common wget libsamplerate0-dev libxerces-c-dev graphviz liblsl libopencv-dev libopencv-calib3d-dev libcunit1-dev
+
+    - if: matrix.target.os == 'windows'
+      name: Set up MSys2 for Windows
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        update: true
+        install: git vim zip unzip mingw-w64-ucrt-x86_64-gcc make mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-eigen3 mingw-w64-ucrt-x86_64-jack2 mingw-w64-ucrt-x86_64-liblo mingw-w64-ucrt-x86_64-libsndfile mingw-w64-ucrt-x86_64-gtkmm3 mingw-w64-ucrt-x86_64-gsl mingw-w64-ucrt-x86_64-fftw mingw-w64-ucrt-x86_64-libsamplerate mingw-w64-ucrt-x86_64-xerces-c mingw-w64-ucrt-x86_64-gtksourceviewmm3 mingw-w64-ucrt-x86_64-dlfcn mingw-w64-ucrt-x86_64-matio mingw-w64-ucrt-x86_64-adwaita-icon-theme mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-cunit mingw-w64-ucrt-x86_64-libmysofa
+
+    - if: matrix.target.os == 'macos'
+      name: Workaround for github-cmake on macOS
+      run: brew uninstall cmake
+
+    - if: matrix.target.os == 'macos'
+      name: Install dependencies for macOS
+      run: brew install pkgconfig glibmm jack liblo libsndfile gtkmm3 eigen boost gsl fftw libsamplerate xerces-c libltc gtksourceviewmm3 coreutils adwaita-icon-theme jpeg libmatio cunit labstreaminglayer/tap/lsl
+
+    # Build
+    - name: Build tascar
+      run: ${{ matrix.target.shell }} "make -j 4"
+
+    # Test
+    - name: Run unit tests
+      run: ${{ matrix.target.shell }} "make unit-tests"
+
+    - name: Run regression tests
+      run: ${{ matrix.target.shell }} "make -C test"
+
+    # Package
+    - if: matrix.target.os != 'windows'
+      run: ${{ matrix.target.shell }} "make pack"
+
+    - if: matrix.target.os == 'windows'
+      run: ${{ matrix.target.shell }} "make packwin"
+
+    # Check status
+    - name: Check git status
+      run: git status
+
+    # Upload artifacts
+    - name: Upload built distribution binaries
+      uses: actions/upload-artifact@v6
+      with:
+        name: "tascar-${{ matrix.target.architecture }}-${{ matrix.target.family }}-${{ matrix.target.libc }}-${{ matrix.target.os }}-${{ matrix.target.os-version }}"
+        path: |
+          packaging/deb/tascar/*/*.deb
+          packaging/win/*.zip
+
+    - name: Upload tascar manual
+      uses: actions/upload-artifact@v6
+      with:
+        name: tascar-manual
+        path: manual/manual.pdf
+
+    # Update wiki
+    - if: matrix.target.wiki
+      name: Check out wiki repository
+      uses: actions/checkout@v6
+      with:
+        repository: ${{github.repository}}.wiki
+        path: ${{github.repository}}.wiki
+
+    - if: matrix.target.wiki
+      name: Push manual to wiki
+      run: |
+        set -e
+        cd $GITHUB_WORKSPACE/${{github.repository}}.wiki
+        mkdir -p ${{github.ref_name}}
+        ls $GITHUB_WORKSPACE/
+        cp $GITHUB_WORKSPACE/manual/manual.pdf ${{github.ref_name}}/
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Actions"
+        git add ${{github.ref_name}}
+        git diff-index --quiet HEAD || git commit -m "action: wiki sync" && git push
