@@ -1,4 +1,4 @@
-name: MacOS make
+name: Build tascar distributions
 
 on:
   push:
@@ -68,6 +68,11 @@ jobs:
       run: git config --global core.autocrlf true
 
     # Install dependencies
+    - if: matrix.target.os == 'ubuntu'
+      name: Add hoerzentrumserver for LSL
+      run: wget -qO- https://apt.hoertech.de/openmha-packaging.pub | sudo apt-key add - &&
+           sudo apt-add-repository 'deb http://apt.hoertech.de/ noble universe'
+
     - if: matrix.target.os == 'ubuntu'
       name: Install dependencies for Ubuntu
       run: sudo apt update &&
