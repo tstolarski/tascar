@@ -29,7 +29,7 @@ jobs:
             shell: bash -c
             apt-channel: noble
             additional-packages: libwebkit2gtk-4.1-dev
-            wiki: true
+            upload-documentation: true
 
           - os: ubuntu
             os-version: "22.04"
@@ -154,7 +154,8 @@ jobs:
           packaging/deb/tascar/*/*.deb
           packaging/win/*.zip
 
-    - name: Upload tascar manual
+    - if: matrix.target.upload-documentation
+      name: Upload tascar manual
       uses: actions/upload-artifact@v6
       with:
         name: tascar-manual
@@ -168,7 +169,7 @@ jobs:
         repository: ${{github.repository}}.wiki
         path: ${{github.repository}}.wiki
 
-    - if: matrix.target.wiki
+    - if: matrix.target.upload-documentation
       name: Push manual to wiki
       run: |
         set -e
