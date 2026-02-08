@@ -63,9 +63,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Retrieve full git history including tags (unshallow)
-      run: git fetch --unshallow --tags
-
     - if: matrix.target.os == 'windows'
       name: Configure Windows to not commit incorrect line endings
       run: git config --global core.autocrlf true
