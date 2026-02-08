@@ -27,7 +27,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-latest
             shell: bash -c
-            additional-packages: libwebkit2gtk-4.0-dev
+            additional-packages: libwebkit2gtk-4.1-dev
             wiki: true
 
           - os: ubuntu
@@ -37,7 +37,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-22.04
             shell: bash -c
-            additional-packages: libwebkit2gtk-4.1-dev
+            additional-packages: libwebkit2gtk-4.0-dev
 
           - os: windows
             os-version: "latest"
