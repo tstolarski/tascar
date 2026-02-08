@@ -89,7 +89,7 @@ jobs:
         libmatio-dev libsndfile1-dev libxml++2.6-dev libxerces-c-dev
         libboost-all-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libltc-dev libsamplerate0-dev
         jackd2 libasound2-dev libjack-jackd2-dev liblo-dev portaudio19-dev liblsl
-        imagemagick libcairomm-1.0-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev graphviz libopencv-dev libopencv-calib3d-dev \
+        imagemagick libcairomm-1.0-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev graphviz libopencv-dev libopencv-calib3d-dev
         ${{ matrix.target.additional-packages }}
 
     - if: matrix.target.os == 'windows'
