@@ -27,6 +27,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-latest
             shell: bash -c
+            apt-channel: noble
             additional-packages: libwebkit2gtk-4.1-dev
             wiki: true
 
@@ -37,6 +38,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-22.04
             shell: bash -c
+            apt-channel: jammy
             additional-packages: libwebkit2gtk-4.0-dev
 
           - os: windows
@@ -73,7 +75,7 @@ jobs:
     - if: matrix.target.os == 'ubuntu'
       name: Add hoerzentrumserver for LSL
       run: wget -qO- https://apt.hoertech.de/openmha-packaging.pub | sudo apt-key add - &&
-           sudo apt-add-repository 'deb http://apt.hoertech.de/ noble universe'
+           sudo apt-add-repository 'deb http://apt.hoertech.de/ ${{ matrix.target.apt-channel }} universe'
 
     - if: matrix.target.os == 'ubuntu'
       name: Install dependencies for Ubuntu
