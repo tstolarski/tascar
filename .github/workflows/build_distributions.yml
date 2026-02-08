@@ -162,7 +162,7 @@ jobs:
         path: manual/manual.pdf
 
     # Update wiki
-    - if: matrix.target.wiki
+    - if: matrix.target.upload-documentation
       name: Check out wiki repository
       uses: actions/checkout@v6
       with:
