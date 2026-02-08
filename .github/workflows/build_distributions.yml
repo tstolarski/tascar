@@ -27,6 +27,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-latest
             shell: bash -c
+            additional-packages: libwebkit2gtk-4.0-dev
             wiki: true
 
           - os: ubuntu
@@ -36,6 +37,7 @@ jobs:
             architecture: x86_64
             runs-on: ubuntu-22.04
             shell: bash -c
+            additional-packages: libwebkit2gtk-4.1-dev
 
           - os: windows
             os-version: "latest"
@@ -76,7 +78,16 @@ jobs:
     - if: matrix.target.os == 'ubuntu'
       name: Install dependencies for Ubuntu
       run: sudo apt update &&
-           sudo apt install --assume-yes build-essential default-jre doxygen dpkg-dev g++ git imagemagick jackd2 libasound2-dev libboost-all-dev libcairomm-1.0-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev libjack-jackd2-dev liblo-dev libltc-dev libmatio-dev libsndfile1-dev libwebkit2gtk-4.0-dev libxml++2.6-dev lsb-release make portaudio19-dev ruby-dev software-properties-common texlive-latex-extra texlive-latex-recommended vim-common wget libsamplerate0-dev libxerces-c-dev graphviz liblsl libopencv-dev libopencv-calib3d-dev libcunit1-dev
+           sudo apt install --assume-yes \
+            build-essential doxygen dpkg-dev g++ make \
+            default-jre git lsb-release ruby-dev software-properties-common vim-common wget \
+            libcunit1-dev \
+            texlive-latex-extra texlive-latex-recommended \
+            libmatio-dev libsndfile1-dev libxml++2.6-dev libxerces-c-dev \
+            libboost-all-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libltc-dev libsamplerate0-dev \
+            jackd2 libasound2-dev libjack-jackd2-dev liblo-dev portaudio19-dev liblsl \
+            imagemagick libcairomm-1.0-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev graphviz libopencv-dev libopencv-calib3d-dev \
+            ${{ matrix.target.additional-packages }}
 
     - if: matrix.target.os == 'windows'
       name: Set up MSys2 for Windows
