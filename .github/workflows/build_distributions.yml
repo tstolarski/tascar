@@ -77,17 +77,18 @@ jobs:
 
     - if: matrix.target.os == 'ubuntu'
       name: Install dependencies for Ubuntu
-      run: sudo apt update &&
-           sudo apt install --assume-yes \
-            build-essential doxygen dpkg-dev g++ make \
-            default-jre git lsb-release ruby-dev software-properties-common vim-common wget \
-            libcunit1-dev \
-            texlive-latex-extra texlive-latex-recommended \
-            libmatio-dev libsndfile1-dev libxml++2.6-dev libxerces-c-dev \
-            libboost-all-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libltc-dev libsamplerate0-dev \
-            jackd2 libasound2-dev libjack-jackd2-dev liblo-dev portaudio19-dev liblsl \
-            imagemagick libcairomm-1.0-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev graphviz libopencv-dev libopencv-calib3d-dev \
-            ${{ matrix.target.additional-packages }}
+      run: |
+        sudo apt update &&
+        sudo apt install --assume-yes \
+        build-essential doxygen dpkg-dev g++ make \
+        default-jre git lsb-release ruby-dev software-properties-common vim-common wget \
+        libcunit1-dev \
+        texlive-latex-extra texlive-latex-recommended \
+        libmatio-dev libsndfile1-dev libxml++2.6-dev libxerces-c-dev \
+        libboost-all-dev libeigen3-dev libfftw3-dev libfftw3-double3 libfftw3-single3 libgsl-dev libltc-dev libsamplerate0-dev \
+        jackd2 libasound2-dev libjack-jackd2-dev liblo-dev portaudio19-dev liblsl \
+        imagemagick libcairomm-1.0-dev libgtkmm-3.0-dev libgtksourceviewmm-3.0-dev graphviz libopencv-dev libopencv-calib3d-dev \
+        ${{ matrix.target.additional-packages }}
 
     - if: matrix.target.os == 'windows'
       name: Set up MSys2 for Windows
@@ -95,7 +96,14 @@ jobs:
       with:
         msystem: UCRT64
         update: true
-        install: git vim zip unzip mingw-w64-ucrt-x86_64-gcc make mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-eigen3 mingw-w64-ucrt-x86_64-jack2 mingw-w64-ucrt-x86_64-liblo mingw-w64-ucrt-x86_64-libsndfile mingw-w64-ucrt-x86_64-gtkmm3 mingw-w64-ucrt-x86_64-gsl mingw-w64-ucrt-x86_64-fftw mingw-w64-ucrt-x86_64-libsamplerate mingw-w64-ucrt-x86_64-xerces-c mingw-w64-ucrt-x86_64-gtksourceviewmm3 mingw-w64-ucrt-x86_64-dlfcn mingw-w64-ucrt-x86_64-matio mingw-w64-ucrt-x86_64-adwaita-icon-theme mingw-w64-ucrt-x86_64-cmake mingw-w64-ucrt-x86_64-cunit mingw-w64-ucrt-x86_64-libmysofa
+        install: |
+          mingw-w64-ucrt-x86_64-gcc make mingw-w64-ucrt-x86_64-pkgconf mingw-w64-ucrt-x86_64-cmake \
+          git vim zip unzip \
+          mingw-w64-ucrt-x86_64-cunit \
+          mingw-w64-ucrt-x86_64-libsndfile mingw-w64-ucrt-x86_64-xerces-c mingw-w64-ucrt-x86_64-dlfcn mingw-w64-ucrt-x86_64-matio \
+          mingw-w64-ucrt-x86_64-eigen3 mingw-w64-ucrt-x86_64-gsl mingw-w64-ucrt-x86_64-fftw mingw-w64-ucrt-x86_64-libsamplerate mingw-w64-ucrt-x86_64-libmysofa \
+          mingw-w64-ucrt-x86_64-jack2 mingw-w64-ucrt-x86_64-liblo \
+          mingw-w64-ucrt-x86_64-gtkmm3 mingw-w64-ucrt-x86_64-gtksourceviewmm3 mingw-w64-ucrt-x86_64-adwaita-icon-theme
 
     - if: matrix.target.os == 'macos'
       name: Workaround for github-cmake on macOS
@@ -103,7 +111,15 @@ jobs:
 
     - if: matrix.target.os == 'macos'
       name: Install dependencies for macOS
-      run: brew install pkgconfig glibmm jack liblo libsndfile gtkmm3 eigen boost gsl fftw libsamplerate xerces-c libltc gtksourceviewmm3 coreutils adwaita-icon-theme jpeg libmatio cunit labstreaminglayer/tap/lsl
+      run: |
+        brew install \
+        pkgconfig \
+        coreutils \
+        cunit \
+        libmatio libsndfile xerces-c jpeg \
+        boost eigen gsl fftw libsamplerate libltc \
+        jack liblo labstreaminglayer/tap/lsl \
+        glibmm gtkmm3 gtksourceviewmm3 adwaita-icon-theme
 
     # Build
     - name: Build tascar
