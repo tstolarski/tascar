@@ -5,15 +5,15 @@ PLUGPATH=$(shell pwd)/../plugins/build/
 BINPATH=$(shell pwd)/../apps/build/
 
 ifeq ($(OS),Windows_NT)
-  DLLEXT = dll
+  DYNAMIC_LIBRARY_EXTENSION := dll
 else
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Linux)
-  DLLEXT = so
-endif
-ifeq ($(UNAME_S),Darwin)
-  DLLEXT = dylib
-endif
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S),Linux)
+    DYNAMIC_LIBRARY_EXTENSION := so
+  endif
+  ifeq ($(UNAME_S),Darwin)
+    DYNAMIC_LIBRARY_EXTENSION := dylib
+  endif
 endif
 
 

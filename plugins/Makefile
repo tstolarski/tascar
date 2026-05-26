@@ -82,18 +82,18 @@ ifeq "$(HAS_OPENMHA)" "yes"
 endif
 
 #
-RECEIVERMODS = $(patsubst %,build/$(PLUGINPREFIX)tascarreceiver_%$(DLLEXT),$(RECEIVERS))
+RECEIVERMODS = $(patsubst %,build/$(PLUGINPREFIX)tascarreceiver_%.$(DYNAMIC_LIBRARY_EXTENSION),$(RECEIVERS))
 
-SOURCEMODS = $(patsubst %,build/$(PLUGINPREFIX)tascarsource_%$(DLLEXT),$(SOURCES))
+SOURCEMODS = $(patsubst %,build/$(PLUGINPREFIX)tascarsource_%.$(DYNAMIC_LIBRARY_EXTENSION),$(SOURCES))
 
-TASCARMODDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_%$(DLLEXT),$(TASCARMODS))
-TASCARMODDLLSGUI = $(patsubst %,build/$(PLUGINPREFIX)tascar_%$(DLLEXT),$(TASCARMODSGUI))
+TASCARMODDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_%.$(DYNAMIC_LIBRARY_EXTENSION),$(TASCARMODS))
+TASCARMODDLLSGUI = $(patsubst %,build/$(PLUGINPREFIX)tascar_%.$(DYNAMIC_LIBRARY_EXTENSION),$(TASCARMODSGUI))
 
-AUDIOPLUGINDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_ap_%$(DLLEXT),$(AUDIOPLUGINS))
+AUDIOPLUGINDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_ap_%.$(DYNAMIC_LIBRARY_EXTENSION),$(AUDIOPLUGINS))
 
-MASKPLUGINDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_mask_%$(DLLEXT),$(MASKPLUGINS))
+MASKPLUGINDLLS = $(patsubst %,build/$(PLUGINPREFIX)tascar_mask_%.$(DYNAMIC_LIBRARY_EXTENSION),$(MASKPLUGINS))
 
-GLABSENSORDLLS = $(patsubst %,build/$(PLUGINPREFIX)glabsensor_%$(DLLEXT),$(GLABSENSORS))
+GLABSENSORDLLS = $(patsubst %,build/$(PLUGINPREFIX)glabsensor_%.$(DYNAMIC_LIBRARY_EXTENSION),$(GLABSENSORS))
 
 
 ifeq "ok" "$(shell pkg-config gtkmm-3.0 && echo ok)"
@@ -107,7 +107,7 @@ endif
 ifeq "$(DEBUG)" "yes"
 CXXFLAGS += -ggdb -DTSCDEBUG
 else
-CXXFLAGS += -O3 
+CXXFLAGS += -O3
 endif
 
 TASCARVERSION=$(FULLVERSION)
@@ -146,64 +146,64 @@ $(TASCARMODDLLSGUI) $(GLABSENSORDLLS): LDLIBS += -lsigc-2.0
 endif
 
 
-build/$(PLUGINPREFIX)glabsensor_%$(DLLEXT): EXTERNALS += gtkmm-3.0
+build/$(PLUGINPREFIX)glabsensor_%.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS += gtkmm-3.0
 
 
 ifeq "$(HAS_LSL)" "yes"
-build/$(PLUGINPREFIX)glabsensor_%$(DLLEXT): LDLIBS+=$(LSLLIBS)
-build/$(PLUGINPREFIX)tascar_ap_periodogram$(DLLEXT): LDLIBS+=$(LSLLIBS)
-build/$(PLUGINPREFIX)tascar_ap_speechactivity$(DLLEXT): LDLIBS+=$(LSLLIBS)
-build/$(PLUGINPREFIX)tascar_lsl2osc$(DLLEXT): LDLIBS+=$(LSLLIBS)
-build/$(PLUGINPREFIX)tascar_datalogging$(DLLEXT):  LDLIBS += $(LSLLIBS)
-build/$(PLUGINPREFIX)tascar_lsljacktime$(DLLEXT) build/$(PLUGINPREFIX)tascar_pos2lsl$(DLLEXT) build/$(PLUGINPREFIX)tascar_levels2osc$(DLLEXT) build/$(PLUGINPREFIX)tascar_lslactor$(DLLEXT) build/$(PLUGINPREFIX)tascar_osc2lsl$(DLLEXT): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)glabsensor_%.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)tascar_ap_periodogram.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)tascar_ap_speechactivity.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)tascar_lsl2osc.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)tascar_datalogging.$(DYNAMIC_LIBRARY_EXTENSION):  LDLIBS += $(LSLLIBS)
+build/$(PLUGINPREFIX)tascar_lsljacktime.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_pos2lsl.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_levels2osc.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_lslactor.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_osc2lsl.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
 endif
 
-build/$(PLUGINPREFIX)tascar_ap_lipsync$(DLLEXT): LDLIBS+=-lfftw3f
-build/$(PLUGINPREFIX)tascar_ap_lipsync_paper$(DLLEXT): LDLIBS+=-lfftw3f
-build/$(PLUGINPREFIX)tascar_ap_openmha$(DLLEXT): LDLIBS+=-lopenmha
-build/$(PLUGINPREFIX)tascar_datalogging$(DLLEXT): LDLIBS += -lmatio
-build/$(PLUGINPREFIX)tascar_datalogging$(DLLEXT): build/datalogging_glade.h
-build/$(PLUGINPREFIX)tascar_hossustain$(DLLEXT): EXTERNALS += fftw3f
-build/$(PLUGINPREFIX)tascar_lightctl$(DLLEXT) build/$(PLUGINPREFIX)tascar_ovheadtracker$(DLLEXT) build/$(PLUGINPREFIX)tascar_serialheadtracker$(DLLEXT): LDLIBS+=$(TASCARDMXLIB)
-build/$(PLUGINPREFIX)tascar_ltcgen$(DLLEXT): EXTERNALS+=ltc
-build/$(PLUGINPREFIX)tascar_simplecontroller$(DLLEXT): build/simplecontroller_glade.h
-build/$(PLUGINPREFIX)tascar_timedisplay$(DLLEXT): build/timedisplay_glade.h
-build/$(PLUGINPREFIX)tascar_waitforlslstream$(DLLEXT): LDLIBS+=$(LSLLIBS)
-build/$(PLUGINPREFIX)tascarreceiver_hoa2d$(DLLEXT): LDLIBS+=-lfftw3f
-build/$(PLUGINPREFIX)tascarreceiver_hoa3d$(DLLEXT): EXTERNALS+=gsl eigen3
-build/$(PLUGINPREFIX)tascarreceiver_hoa3d_enc$(DLLEXT): EXTERNALS+=gsl
+build/$(PLUGINPREFIX)tascar_ap_lipsync.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=-lfftw3f
+build/$(PLUGINPREFIX)tascar_ap_lipsync_paper.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=-lfftw3f
+build/$(PLUGINPREFIX)tascar_ap_openmha.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=-lopenmha
+build/$(PLUGINPREFIX)tascar_datalogging.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS += -lmatio
+build/$(PLUGINPREFIX)tascar_datalogging.$(DYNAMIC_LIBRARY_EXTENSION): build/datalogging_glade.h
+build/$(PLUGINPREFIX)tascar_hossustain.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS += fftw3f
+build/$(PLUGINPREFIX)tascar_lightctl.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_ovheadtracker.$(DYNAMIC_LIBRARY_EXTENSION) build/$(PLUGINPREFIX)tascar_serialheadtracker.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(TASCARDMXLIB)
+build/$(PLUGINPREFIX)tascar_ltcgen.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS+=ltc
+build/$(PLUGINPREFIX)tascar_simplecontroller.$(DYNAMIC_LIBRARY_EXTENSION): build/simplecontroller_glade.h
+build/$(PLUGINPREFIX)tascar_timedisplay.$(DYNAMIC_LIBRARY_EXTENSION): build/timedisplay_glade.h
+build/$(PLUGINPREFIX)tascar_waitforlslstream.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=$(LSLLIBS)
+build/$(PLUGINPREFIX)tascarreceiver_hoa2d.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS+=-lfftw3f
+build/$(PLUGINPREFIX)tascarreceiver_hoa3d.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS+=gsl eigen3
+build/$(PLUGINPREFIX)tascarreceiver_hoa3d_enc.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS+=gsl
 
 ifeq "$(HAS_OPENCV2)" "yes"
-build/$(PLUGINPREFIX)glabsensor_trackir$(DLLEXT): EXTERNALS += opencv
+build/$(PLUGINPREFIX)glabsensor_trackir.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS += opencv
 endif
 ifeq "$(HAS_OPENCV4)" "yes"
-build/$(PLUGINPREFIX)glabsensor_trackir$(DLLEXT): EXTERNALS += opencv4
+build/$(PLUGINPREFIX)glabsensor_trackir.$(DYNAMIC_LIBRARY_EXTENSION): EXTERNALS += opencv4
 endif
 
-build/$(PLUGINPREFIX)tascar_transportgui$(DLLEXT): build/transportgui_glade.h
+build/$(PLUGINPREFIX)tascar_transportgui.$(DYNAMIC_LIBRARY_EXTENSION): build/transportgui_glade.h
 
 build/glabsensors.o: EXTERNALS += gtkmm-3.0
 build/glabsensors.o: build/glabsensors_glade.h
-build/$(PLUGINPREFIX)tascar_glabsensors$(DLLEXT): build/glabsensors_glade.h
-build/$(PLUGINPREFIX)tascar_glabsensors$(DLLEXT): build/glabsensorplugin.o build/glabsensors_glade.h src/glabsensorplugin.h
-build/$(PLUGINPREFIX)tascar_glabsensors$(DLLEXT): LDLIBS += $(LSLLIBS) build/glabsensorplugin.o
+build/$(PLUGINPREFIX)tascar_glabsensors.$(DYNAMIC_LIBRARY_EXTENSION): build/glabsensors_glade.h
+build/$(PLUGINPREFIX)tascar_glabsensors.$(DYNAMIC_LIBRARY_EXTENSION): build/glabsensorplugin.o build/glabsensors_glade.h src/glabsensorplugin.h
+build/$(PLUGINPREFIX)tascar_glabsensors.$(DYNAMIC_LIBRARY_EXTENSION): LDLIBS += $(LSLLIBS) build/glabsensorplugin.o
 
-build/$(PLUGINPREFIX)tascarreceiver_%$(DLLEXT): src/receivermod_%.cc
+build/$(PLUGINPREFIX)tascarreceiver_%.$(DYNAMIC_LIBRARY_EXTENSION): src/receivermod_%.cc
 	$(CXX) -shared -o $@ $< $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
-build/$(PLUGINPREFIX)tascarsource_%$(DLLEXT): src/tascarsource_%.cc
+build/$(PLUGINPREFIX)tascarsource_%.$(DYNAMIC_LIBRARY_EXTENSION): src/tascarsource_%.cc
 	$(CXX) -shared -o $@ $< $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
-build/$(PLUGINPREFIX)tascar_%$(DLLEXT): src/tascarmod_%.cc
+build/$(PLUGINPREFIX)tascar_%.$(DYNAMIC_LIBRARY_EXTENSION): src/tascarmod_%.cc
 	$(CXX) -shared -o $@ $< $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
-build/$(PLUGINPREFIX)tascar_ap_%$(DLLEXT): src/tascar_ap_%.cc
+build/$(PLUGINPREFIX)tascar_ap_%.$(DYNAMIC_LIBRARY_EXTENSION): src/tascar_ap_%.cc
 	$(CXX) -shared -o $@ $< $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
-build/$(PLUGINPREFIX)tascar_mask_%$(DLLEXT): src/tascar_mask_%.cc
+build/$(PLUGINPREFIX)tascar_mask_%.$(DYNAMIC_LIBRARY_EXTENSION): src/tascar_mask_%.cc
 	$(CXX) -shared -o $@ $< $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
-build/$(PLUGINPREFIX)glabsensor_%$(DLLEXT): src/glabsensor_%.cc build/glabsensorplugin.o
+build/$(PLUGINPREFIX)glabsensor_%.$(DYNAMIC_LIBRARY_EXTENSION): src/glabsensor_%.cc build/glabsensorplugin.o
 	$(CXX) -shared -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LDLIBS)
 
 build/%_glade.h: src/%.glade

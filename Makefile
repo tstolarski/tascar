@@ -1,27 +1,9 @@
-PREFIX=/usr/local
-LIBDIR=$(PREFIX)/lib
-BINDIR=$(PREFIX)/bin
-INCDIR=$(PREFIX)/include/tascar
-DESTDIR=
+# Import configuration
+include config.mk
 
 # Define modules and documentation modules
 MODULES = libtascar apps plugins gui
 DOCMODULES = doc manual
-
-# Detect OS
-UNAME_S := $(shell uname -s)
-
-# OS-specific settings
-ifeq ($(UNAME_S),Linux)
-    CMD_INSTALL = install
-    LIB_EXT = so
-    CMD_LD = ldconfig -n $(DESTDIR)$(LIBDIR)
-endif
-ifeq ($(UNAME_S),Darwin)
-    CMD_INSTALL = ginstall
-    LIB_EXT = dylib
-    CMD_LD =
-endif
 
 # Default target
 all: $(MODULES)
@@ -81,10 +63,10 @@ coverage: googletest unit-tests test testjack
 	x-www-browser ./coverage/index.html
 
 install: all
-	$(CMD_INSTALL) -D libtascar/build/libtascar*.$(LIB_EXT) -t $(DESTDIR)$(LIBDIR)
+	$(CMD_INSTALL) -D libtascar/build/libtascar*.$(DYNAMIC_LIBRARY_EXTENSION) -t $(DESTDIR)$(LIBDIR)
 	$(CMD_INSTALL) -D libtascar/include/*.h -t $(DESTDIR)$(INCDIR)/tascar
 	$(CMD_INSTALL) -D libtascar/build/*.h -t $(DESTDIR)$(INCDIR)/tascar
-	$(CMD_INSTALL) -D plugins/build/*.$(LIB_EXT) -t $(DESTDIR)$(LIBDIR)
+	$(CMD_INSTALL) -D plugins/build/*.$(DYNAMIC_LIBRARY_EXTENSION) -t $(DESTDIR)$(LIBDIR)
 	$(CMD_INSTALL) -D apps/build/tascar_* -t $(DESTDIR)$(BINDIR)
 	$(CMD_INSTALL) -D gui/build/tascar -t $(DESTDIR)$(BINDIR)
 	$(CMD_INSTALL) -D gui/build/tascar_spkcalib -t $(DESTDIR)$(BINDIR)
@@ -106,8 +88,6 @@ releasepack: checkversiontagged checkmodified $(MODULES) $(DOCMODULES) docexampl
 
 fastpack: $(MODULES) $(DOCMODULES)
 	$(MAKE) -C packaging/deb
-
-include config.mk
 
 checkmodified:
 	test -z "`git status --porcelain -uno`"
