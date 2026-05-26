@@ -8,12 +8,9 @@ BUILD_DIR := build
 SOURCE_DIR := src
 
 # Derived paths
-LIBDIR=$(PREFIX)/lib
-BINDIR=$(PREFIX)/bin
-INCDIR=$(PREFIX)/include/tascar
-
-# Platform & architecture detection
-include platform.mk
+LIBDIR := $(PREFIX)/lib
+BINDIR := $(PREFIX)/bin
+INCDIR := $(PREFIX)/include/tascar
 
 # Compiler options
 CXXFLAGS = -Wall -Wextra -Wdeprecated-declarations -Wno-psabi -std=c++17 -pthread	\
@@ -23,23 +20,23 @@ CXXFLAGS = -Wall -Wextra -Wdeprecated-declarations -Wno-psabi -std=c++17 -pthrea
 CPPFLAGS = -std=c++17
 
 # Git revision info
-GITMODIFIED:=$(shell test -z "`git status --porcelain -uno`" || echo "-modified")
-COMMITHASH:=$(shell git log -1 --abbrev=7 --pretty='format:%h')
-LATEST_RELEASETAG:=$(shell git tag -l "release*" |tail -1)
-COMMIT_SINCE_RELEASE:=$(shell git rev-list --count $(LATEST_RELEASETAG)..)
+GITMODIFIED := $(shell test -z "`git status --porcelain -uno`" || echo "-modified")
+COMMITHASH := $(shell git log -1 --abbrev=7 --pretty='format:%h')
+LATEST_RELEASETAG := $(shell git tag -l "release*" |tail -1)
+COMMIT_SINCE_RELEASE := $(shell git rev-list --count $(LATEST_RELEASETAG)..)
 
-FULLVERSION=$(VERSION).$(COMMIT_SINCE_RELEASE)-$(COMMITHASH)$(GITMODIFIED)
+FULLVERSION = $(VERSION).$(COMMIT_SINCE_RELEASE)-$(COMMITHASH)$(GITMODIFIED)
 
 # Paths to project locations
 mkfile_name := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfile_path := $(subst $(notdir $(mkfile_name)),,$(mkfile_name))
 
 # Library features
-HAS_LSL=yes
-HAS_OPENMHA:=$(shell $(mkfile_path)/check_for_openmha)
-HAS_OPENCV2:=$(shell $(mkfile_path)/check_for_opencv2)
-HAS_OPENCV4:=$(shell $(mkfile_path)/check_for_opencv4)
-HAS_WEBKIT:=$(shell $(mkfile_path)/check_for_webkit)
+HAS_LSL := yes
+HAS_OPENMHA := $(shell $(mkfile_path)/check_for_openmha)
+HAS_OPENCV2 := $(shell $(mkfile_path)/check_for_opencv2)
+HAS_OPENCV4 := $(shell $(mkfile_path)/check_for_opencv4)
+HAS_WEBKIT := $(shell $(mkfile_path)/check_for_webkit)
 
 # Exports
 export VERSION

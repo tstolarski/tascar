@@ -1,9 +1,11 @@
 .PHONY: install build
 
-#tascar project directory
-REPO=../..
+# tascar project directory
+REPOSITORY_ROOT = ../..
 
-include $(REPO)/config.mk
+# includes
+include $(REPOSITORY_ROOT)/platform.mk
+include $(REPOSITORY_ROOT)/config.mk
 
 install: usr-local-bin \
          usr-local-lib \
@@ -14,7 +16,7 @@ install: usr-local-bin \
 build:
 	rm -rf homebrew-build-dir
 	mkdir homebrew-build-dir
-	$(MAKE) -C "$(REPO)" "DESTDIR=$$(realpath homebrew-build-dir)" install
+	$(MAKE) -C "$(REPOSITORY_ROOT)" "DESTDIR=$$(realpath homebrew-build-dir)" install
 	chmod 755 "homebrew-build-dir/$(PREFIX)/bin/"*
 	chmod 755 "homebrew-build-dir/$(PREFIX)/lib/"*
 

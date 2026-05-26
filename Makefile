@@ -1,4 +1,5 @@
 # Import configuration
+include platform.mk
 include config.mk
 
 # Define modules and documentation modules
