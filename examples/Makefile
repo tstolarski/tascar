@@ -4,18 +4,7 @@ LIBPATH=$(shell pwd)/../libtascar/build/
 PLUGPATH=$(shell pwd)/../plugins/build/
 BINPATH=$(shell pwd)/../apps/build/
 
-ifeq ($(OS),Windows_NT)
-  DYNAMIC_LIBRARY_EXTENSION := dll
-else
-  UNAME_S := $(shell uname -s)
-  ifeq ($(UNAME_S),Linux)
-    DYNAMIC_LIBRARY_EXTENSION := so
-  endif
-  ifeq ($(UNAME_S),Darwin)
-    DYNAMIC_LIBRARY_EXTENSION := dylib
-  endif
-endif
-
+include ../platform.mk
 
 all: $(EXAMPLES:.tsc=.validated)
 
