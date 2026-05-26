@@ -1,3 +1,6 @@
+# Shared configuration for makefiles
+# You should import platform.mk alongside config.mk for the platform detection.
+
 # Project settings
 VERSION := 0.237.1
 
