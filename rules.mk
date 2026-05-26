@@ -45,8 +45,8 @@ CPPFLAGS += -I$(BREWPREFIX)/include
 LDFLAGS += -L$(BREWPREFIX)/lib
 LSLFLAGSFIND := $(addprefix -I,$(dir $(shell find $(BREWPREFIX)/ -name lsl_cpp.h)))
 CXXFLAGS += $(LSLFLAGSFIND)
-#  LDFLAGS += -F/opt/homebrew/Cellar/lsl/1.17.4/Frameworks -framework lsl
-#  $(addprefix -I,$(dir $(shell find /opt/homebrew/ -name lsl_cpp.h)))
+#  LDFLAGS += -F$(BREWPREFIX)/Cellar/lsl/1.17.4/Frameworks -framework lsl
+#  $(addprefix -I,$(dir $(shell find $(BREWPREFIX)/ -name lsl_cpp.h)))
 # -framework Lsl
 LSLCFLAGS = -I$(BREWPREFIX)/Frameworks/lsl.framework/Headers
 LSLLIBS = -F$(BREWPREFIX)/Frameworks/ -framework lsl
